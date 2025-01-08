@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="https://ik.imagekit.io/harmonystudio/amara%20logo.svg" alt="amara-logo" width="100px">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        {% if request.user.is_authenticated %}
+        <div class="ms-auto">
+            <div class="d-flex align-items-center">
+              <div>
+                <a href="javascript:void(0);" style="text-decoration: none; color: #BC1922;">Welcome, {{request.user.username}}</a>
+              </div>
+              <div>
+                <a href="#logout-user" id="logoutUser" class="btn btn-sm btn-success ms-3">Logout</a>
+                <form id="logoutUserForm" style="display: none;">
+                  {% csrf_token %}
+                </form>
+              </div>
+            </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+</nav>
+<div class="container text-center">
+    <div class="align-items-center">
+        <div class="mt-5 mb-3">
+            <h1>Send Emails (with Letterhead)</h1>
+        </div>
+        <form id="send-email-form">
+            {% csrf_token %}
+            <div class="my-3">
+                <input type="text" class="form-control" name="emails" placeholder="Enter email ids">
+            </div>
+            <div class="my-3">
+                <input type="text" name="subject" class="form-control" placeholder="Subject">
+            </div>
+            <div class="my-3">
+                <textarea id="amaraEditor"></textarea>
+            </div>
+            <div class="my-3">
+                <button type="submit" class="btn btn-dark col-6">Send</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    tinymce.init({
+      selector: '#amaraEditor',
+      plugins: [
+        // Core editing features
+        'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+        // Your account includes a free trial of TinyMCE premium features
+        // Try the most popular premium features until Jan 20, 2025:
+        'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown','importword', 'exportword', 'exportpdf'
+      ],
+      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+      tinycomments_mode: 'embedded',
+      tinycomments_author: 'Sanju Thapa',
+      ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+    });
+  </script>
+  <script src="/media/js/logout.js"></script>
+  <script src="/media/js/send-mails.js"></script>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container text-center my-5 p-5">
+    <div style="margin: 0 150px;">
+            <img src="https://ik.imagekit.io/harmonystudio/amara%20logo.svg" width="150px" alt="login-page-amara">
+            <form class="login-form mt-5">
+                {% csrf_token %}
+                <div class="my-3">
+                    <input type="text" name="username" placeholder="Username" class="form-control">
+                </div>
+                <div class="my-3">
+                    <input type="password" name="password" placeholder="Password" class="form-control">
+                </div>
+                <div class="my-3">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+            </form>
+    </div>
+</div>
+
+<script src="/media/js/login.js"></script>
+{% endblock %}
