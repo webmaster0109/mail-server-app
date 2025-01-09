@@ -30,7 +30,7 @@ INSTALLED_APPS = [
 
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://mail-server.ahofa.com",
+    "https://the-flame-mail-server.zvgijm.easypanel.host",
 ]
 
 MIDDLEWARE = [
