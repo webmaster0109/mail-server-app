@@ -9,6 +9,7 @@ async function sendEmailSystem(e) {
     const subject = document.querySelector('[name=subject]').value;
     const retreiveEmails = document.querySelector('[name=emails]').value;
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
 
     const response = await fetch('/account/dashboard/', {
         method: 'POST',

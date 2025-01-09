@@ -34,11 +34,15 @@
         <div class="mt-5 mb-3">
             <h1>Send Emails (with Letterhead)</h1>
         </div>
-        <form id="send-email-form">
+        <form id="send-email-form" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="my-3">
                 <input type="text" class="form-control" name="emails" placeholder="Enter email ids">
             </div>
+            <!-- <div class="my-3">
+                <label for="file">Upload Email List (*excel file):</label>
+                <input type="file" name="file" id="file" class="form-control" accept="*xlsx">
+            </div> -->
             <div class="my-3">
                 <input type="text" name="subject" class="form-control" placeholder="Subject">
             </div>
