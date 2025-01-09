@@ -37,6 +37,13 @@
         <form id="send-email-form" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="my-3">
+              <select name="emailUser" id="emailUser" class="form-select">
+                <option value="">Select Email User</option>
+                <option value="SECOND_USER">info@ahofa.com</option>
+                <option value="FIRST_USER">kd@ahofa.com</option>
+              </select>
+            </div>
+            <div class="my-3">
                 <input type="text" class="form-control" name="emails" placeholder="Enter email ids">
             </div>
             <!-- <div class="my-3">

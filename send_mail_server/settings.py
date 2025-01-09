@@ -30,7 +30,7 @@ INSTALLED_APPS = [
 
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://the-flame-mail-server.zvgijm.easypanel.host",
+    "https://mail-server.ahofa.com",
 ]
 
 MIDDLEWARE = [
@@ -132,6 +132,17 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'kd@ahofa.com'
-EMAIL_HOST_PASSWORD = 'hhnypsrgylwpkrdv'
+
+EMAIL_USERS = {
+    'FIRST_USER' : {
+        'email' : 'kd@ahofa.com',
+        'password' : 'hhnypsrgylwpkrdv',
+    },
+    'SECOND_USER' : {
+        'email' : 'info@ahofa.com',
+        'password' : 'vpqmupdfwyubnmbw',
+    }
+}
+
+DEFAULT_EMAIL_USER = 'FIRST_USER'
 

@@ -9,7 +9,26 @@ async function sendEmailSystem(e) {
     const subject = document.querySelector('[name=subject]').value;
     const retreiveEmails = document.querySelector('[name=emails]').value;
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    
+    const emailUser = document.querySelector('#emailUser').value;
+    console.log(emailUser);
+
+    // Validate form fields
+    if (!emailUser) {
+        alert('Please select a valid email user.');
+        return;
+    }
+    if (!retreiveEmails) {
+        alert('Please provide at least one email ID.');
+        return;
+    }
+    if (!subject) {
+        alert('Please provide a subject.');
+        return;
+    }
+    if (!textareaData) {
+        alert('Please provide email content.');
+        return;
+    }
 
     const response = await fetch('/account/dashboard/', {
         method: 'POST',
@@ -21,6 +40,7 @@ async function sendEmailSystem(e) {
             emails: retreiveEmails,
             subject: subject,
             textareaData: textareaData,
+            emailUser: emailUser,
         })
     });
 

@@ -50,6 +50,7 @@ def homepage(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)  # Parse JSON payload
+            emailUser = data.get('emailUser')
             emails = data.get('emails')
             subject = data.get('subject')
             content = data.get('textareaData')
@@ -68,8 +69,9 @@ def homepage(request):
                 'content': content
             }
 
+            send_mail_func(subject, template_path, context, emailUser, email_list, text_content)
             
-            send_mail_func(subject, text_content, template_path, context, email_list)
+            # print(emailUser == "FIRST_USER")
 
             return JsonResponse({'status': 'success', 'message': 'Send mail successfully'}, status=200)
         except json.JSONDecodeError:
