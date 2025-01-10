@@ -2,33 +2,6 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-        <img src="https://ik.imagekit.io/harmonystudio/amara%20logo.svg" alt="amara-logo" width="100px">
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        {% if request.user.is_authenticated %}
-        <div class="ms-auto">
-            <div class="d-flex align-items-center">
-              <div>
-                <a href="javascript:void(0);" style="text-decoration: none; color: #BC1922;">Welcome, {{request.user.username}}</a>
-              </div>
-              <div>
-                <a href="#logout-user" id="logoutUser" class="btn btn-sm btn-success ms-3">Logout</a>
-                <form id="logoutUserForm" style="display: none;">
-                  {% csrf_token %}
-                </form>
-              </div>
-            </div>
-        </div>
-        {% endif %}
-      </div>
-    </div>
-</nav>
 <div class="container text-center">
     <div class="align-items-center">
         <div class="mt-5 mb-3">
@@ -86,6 +59,5 @@
       ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
     });
   </script>
-  <script src="/media/js/logout.js"></script>
   <script src="/media/js/send-mails.js"></script>
 {% endblock %}

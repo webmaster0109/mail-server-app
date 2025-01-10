@@ -13,17 +13,19 @@ async function sendEmailSystem(e) {
     const attachments = document.querySelector('#file');
     const fileInput = attachments.files;
 
+    console.log(textareaData);
+
     // Validate form fields
     if (!emailUser) {
-        alert('Please select a valid email user.');
+        createToast('Please select a valid email user.', 'Warning');
         return;
     }
     if (!retreiveEmails) {
-        alert('Please provide at least one email ID.');
+        createToast('Please provide at least one email ID.', 'Warning');
         return;
     }
     if (!subject) {
-        alert('Please provide a subject.');
+        createToast('Please provide a subject.', 'Warning');
         return;
     }
     if (!textareaData) {
@@ -43,19 +45,24 @@ async function sendEmailSystem(e) {
         }
     }
 
-    const response = await fetch('/account/dashboard/', {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': csrfToken,
-        },
-        body: formData
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-        alert(result.message);
-    } else {
-        alert(result.message);
+    try {
+        const response = await fetch('/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+            },
+            body: formData
+        });
+    
+        const result = await response.json();
+    
+        if (response.ok) {
+            createToast(result.message, 'Success');
+        } else {
+            createToast(result.message, 'Error');
+        }
+    } catch (error) {
+        console.log(error);
+        createToast('Something went wrong, try again.', 'Error');
     }
 }

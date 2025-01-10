@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="my-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+              <li class="breadcrumb-item active" aria-current="page">History</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="my-3">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Sender</th>
+                    <th>Subject</th>
+                    <th>To (Emails)</th>
+                    <th>Created At</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mail in mails %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{% if mail.emailUser == "SECOND_USER" %}info@ahofa.com{% else %}kd@ahofa.com{% endif %}</td>
+                    <td>{{mail.subject}}</td>
+                    <td>{{mail.emails}}</td>
+                    <td>{{mail.created_at}}</td>
+                    <td>
+                        <a href="{% url 'mail_view' mail.id %}" class="btn btn-sm btn-primary">View</a>
+                        <!-- <a id="delete-mail" href="#delete-mail" class="btn btn-sm btn-danger" data-mail-id="{{mail.id}}">Delete</a> -->
+                        <!-- <form id="deleteForm" style="display: none;">
+                        </form> -->
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="/media/js/delete_mail.js"></script>
+{% endblock %}

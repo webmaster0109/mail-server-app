@@ -20,11 +20,13 @@ async function loginFormAuthentication(e) {
     const result = await response.json();
 
     if (response.ok) {
-        alert(result.message);
+        createToast(result.message, 'Success');
         setTimeout(() => {
-            window.location.replace('/account/dashboard/');
+            window.location.replace('/');
         }, 2000);
+    } else if (response.status === 400) {
+        createToast(result.message, 'Warning');
     } else {
-        alert(result.message);
+        createToast(result.message, 'Error');
     }
 }

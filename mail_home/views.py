@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404   
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
@@ -6,6 +6,7 @@ import json
 from .utils import send_mail_func
 import re
 from django.utils.html import strip_tags
+from .models import MailHome, Attachment
 
 def login_attempt(request):
     if request.method == "POST":
@@ -42,7 +43,7 @@ def logout_attempt(request):
     if request.method != "POST":
         return JsonResponse({'status': 'error', 'message': 'Invalid method requested'}, status=401)
     logout(request)
-    return JsonResponse({'status': 'success', 'message': 'logged out successfully'}, status=200)
+    return JsonResponse({'status': 'success', 'message': 'logging out...'}, status=200)
     
 
 @login_required(login_url='/account/login/')
@@ -55,9 +56,6 @@ def homepage(request):
             subject = request.POST.get('subject')
             content = request.POST.get('textareaData')
             attachments = request.FILES.getlist('file')
-
-            if not emails or not content:
-                return JsonResponse({'status': 'error', 'message': 'All fields are required'}, status=400)
             
             plain_text_content = re.sub(r'</p>\s*', '\n', content)  
             plain_text_content = strip_tags(plain_text_content).strip()
@@ -70,11 +68,44 @@ def homepage(request):
                 'content': content
             }
 
+            mail_instance = MailHome.objects.create(
+                owner=request.user,
+                emailUser=emailUser,
+                emails=email_list,
+                subject=subject,
+                content=content
+            )
+
+            for attachment in attachments:
+                Attachment.objects.create(mail=mail_instance, attachments=attachment)
+
             send_mail_func(subject, template_path, context, emailUser, email_list, text_content, attachments)
 
             return JsonResponse({'status': 'success', 'message': 'Send mail successfully'}, status=200)
         except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'Invalid JSON payload'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON payload'}, status=401)
         
     return render(request, template_name="index.html")
+
+@login_required(login_url='/account/login/')
+def mail_list(request):
+    mails = MailHome.objects.filter(owner=request.user)
+    return render(request, template_name="mail_list.html", context={'mails': mails})
+
+@login_required(login_url='/account/login/')
+def mail_template_detail(request, pk):
+    mail = MailHome.objects.get(owner=request.user, pk=pk)
+    content = mail.content
+    return render(request, template_name="mail_template.html", context={'mail': mail, 'content': content})
+
+@login_required(login_url='/account/login/')
+def mail_delete(request, pk):
+    if request.method != "POST":
+        return JsonResponse({'status': 'error', 'message': 'Invalid method requested'}, status=405)
+    try:
+        mail = get_object_or_404(MailHome, owner=request.user, pk=pk)
+        mail.delete()
+        return JsonResponse({'status': 'success', 'message': 'Mail deleted successfully'}, status=200)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
     

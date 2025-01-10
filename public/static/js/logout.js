@@ -18,15 +18,15 @@ async function logoutAuthentication(e) {
         const result = await response.json();
     
         if (response.ok) {
-            alert(result.message);
+            createToast(result.message, 'Success');
             setTimeout(() => {
                 window.location.replace('/account/login/');
             }, 2000);
         } else {
-            alert (result.message);
+            createToast(result.message, 'Warning');
         }
     } catch (error) {
         console.log(error);
-        alert('Something went wrong, try again.')
+        createToast('Something went wrong, try again.', 'Error');
     }
 }
