@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(mailId, typeof mailIdInt);
             const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-            const response = await fetch(`/mail/delete/${mailIdInt}/`, {
+            const response = await fetch(`/account/mail/delete/${mailIdInt}/`, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': csrfToken,
@@ -23,10 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 createToast(result.message, 'Success');
                 // Optionally, remove the deleted mail row from the UI
-                // const mailRow = button.closest('tr');
-                // if (mailRow) {
-                //     mailRow.remove();
-                // }
+                const mailRow = button.closest('tr');
+                if (mailRow) {
+                    mailRow.remove();
+                }
             } else {
                 createToast(result.message, 'Warning');
             }

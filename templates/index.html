@@ -2,27 +2,27 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div class="container text-center">
+<div class="container">
     <div class="align-items-center">
         <div class="mt-5 mb-3">
-            <h1>Send Emails (with Letterhead)</h1>
+            <h1 class="text-center">Send Emails (with Letterhead)</h1>
         </div>
         <form id="send-email-form" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="my-3">
-              <select name="emailUser" id="emailUser" class="form-select">
-                <option value="">Select Email User</option>
-                <option value="SECOND_USER">info@ahofa.com</option>
-                <option value="FIRST_USER">kd@ahofa.com</option>
-              </select>
+              <div class="row">
+                <div class="col-md-6">
+                  <select name="emailUser" id="emailUser" class="form-select">
+                    <option value="">Select Email User</option>
+                    <option value="SECOND_USER">info@ahofa.com</option>
+                    <option value="FIRST_USER">kd@ahofa.com</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" class="form-control" name="emails" placeholder="Enter email ids">
+                </div>
+              </div>
             </div>
-            <div class="my-3">
-                <input type="text" class="form-control" name="emails" placeholder="Enter email ids">
-            </div>
-            <!-- <div class="my-3">
-                <label for="file">Upload Email List (*excel file):</label>
-                <input type="file" name="file" id="file" class="form-control" accept="*xlsx">
-            </div> -->
             <div class="my-3">
                 <div class="row">
                   <div class="col-md-6">
@@ -32,6 +32,12 @@
                     <input type="file" name="file" id="file" class="form-control" multiple>
                   </div>
                 </div>
+            </div>
+            <div class="my-3">
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+              <label class="form-check-label ms-2" for="flexCheckDefault">
+                Do you want signature in email?
+              </label>
             </div>
             <div class="my-3">
                 <textarea id="amaraEditor"></textarea>
@@ -60,4 +66,14 @@
     });
   </script>
   <script src="/media/js/send-mails.js"></script>
+  <script>
+    const checkBox = document.getElementById('flexCheckDefault');
+    checkBox.addEventListener('change', () => {
+      if (checkBox.checked) {
+        checkBox.value = 'isSignatureActive';
+      } else {
+        checkBox.value = '';
+      }
+    })
+  </script>
 {% endblock %}

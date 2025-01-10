@@ -9,6 +9,7 @@ class MailHome(models.Model):
     emails = models.TextField()
     subject = models.CharField(max_length=100)
     content = models.TextField()
+    signature = models.TextField(default="", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     
     def __str__(self):

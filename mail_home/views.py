@@ -54,6 +54,7 @@ def homepage(request):
             emailUser = request.POST.get('emailUser')
             emails = request.POST.get('emails')
             subject = request.POST.get('subject')
+            isSignature = request.POST.get('isSignature')
             content = request.POST.get('textareaData')
             attachments = request.FILES.getlist('file')
             
@@ -64,8 +65,15 @@ def homepage(request):
             text_content = plain_text_content
             template_path = "mail_template.html"
 
+            signature = ""
+
+            if isSignature == "isSignatureActive":
+                signature += "<p>Thanks,</p><p>Kamal Dandona</p><p><b>Chairman<b></p><p style='font-style: italic;'>Amara Hall of Fame Awards</p>"
+
             context = {
-                'content': content
+                'content': content,
+                'signature': signature,
+                'isSignature': isSignature
             }
 
             mail_instance = MailHome.objects.create(
@@ -73,7 +81,8 @@ def homepage(request):
                 emailUser=emailUser,
                 emails=email_list,
                 subject=subject,
-                content=content
+                content=content,
+                signature=signature
             )
 
             for attachment in attachments:
@@ -96,7 +105,7 @@ def mail_list(request):
 def mail_template_detail(request, pk):
     mail = MailHome.objects.get(owner=request.user, pk=pk)
     content = mail.content
-    return render(request, template_name="mail_template.html", context={'mail': mail, 'content': content})
+    return render(request, template_name="mail_template.html", context={'mail': mail, 'content': content, 'signature': mail.signature})
 
 @login_required(login_url='/account/login/')
 def mail_delete(request, pk):

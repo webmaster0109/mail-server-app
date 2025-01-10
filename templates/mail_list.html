@@ -32,9 +32,10 @@
                     <td>{{mail.created_at}}</td>
                     <td>
                         <a href="{% url 'mail_view' mail.id %}" class="btn btn-sm btn-primary">View</a>
-                        <!-- <a id="delete-mail" href="#delete-mail" class="btn btn-sm btn-danger" data-mail-id="{{mail.id}}">Delete</a> -->
-                        <!-- <form id="deleteForm" style="display: none;">
-                        </form> -->
+                        <a id="delete-mail" href="#delete-mail" class="btn btn-sm btn-danger" data-mail-id="{{mail.id}}">Delete</a>
+                        <form id="deleteForm" style="display: none;">
+                            {% csrf_token %}
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}

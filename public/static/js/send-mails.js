@@ -13,6 +13,8 @@ async function sendEmailSystem(e) {
     const attachments = document.querySelector('#file');
     const fileInput = attachments.files;
 
+    const isSignature = document.querySelector('#flexCheckDefault');
+
     console.log(textareaData);
 
     // Validate form fields
@@ -38,6 +40,7 @@ async function sendEmailSystem(e) {
     formData.append('subject', subject);
     formData.append('textareaData', textareaData);
     formData.append('emailUser', emailUser);
+    formData.append('isSignature', isSignature.value);
 
     if (fileInput.length > 0) {
         for (let i = 0; i < fileInput.length; i++) {
