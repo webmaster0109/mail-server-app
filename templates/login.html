@@ -2,8 +2,15 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
+<style>
+    @media only screen and (max-width: 480px) {
+        .side-container {
+            margin: 0 !important;
+        }
+    }
+</style>
 <div class="container text-center my-5 p-5">
-    <div style="margin: 0 150px;">
+    <div class="side-container" style="margin: 0 150px;">
             <img src="https://ik.imagekit.io/harmonystudio/amara%20logo.svg" width="150px" alt="login-page-amara">
             <form class="login-form mt-5">
                 {% csrf_token %}

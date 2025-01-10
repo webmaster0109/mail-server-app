@@ -2,7 +2,7 @@ from django.core.mail import EmailMultiAlternatives, get_connection, EmailMessag
 from django.conf import settings
 from django.template.loader import render_to_string
 
-def send_mail_func(subject, template_path, context, from_user, recipient_list, text_content=None):
+def send_mail_func(subject, template_path, context, from_user, recipient_list, text_content=None, attachments=None, signature=None):
     try:
         if from_user not in settings.EMAIL_USERS:
             raise ValueError(f"Email user '{from_user}' not configured")
@@ -19,6 +19,11 @@ def send_mail_func(subject, template_path, context, from_user, recipient_list, t
 
         # Render the HTML template with context
         html_content = render_to_string(template_path, context)
+
+        if signature:
+            html_content += f"<br><br>{signature}"
+            if text_content:
+                text_content += f"\n\n{signature}"
         
         # Set up the email
         # msg = EmailMultiAlternatives(subject, text_content, from_email, recipient_list)
@@ -34,6 +39,11 @@ def send_mail_func(subject, template_path, context, from_user, recipient_list, t
         )
 
         email.content_subtype = "html"
+        
+        if attachments:
+            for attachment in attachments:
+                email.attach(attachment.name, attachment.read(), attachment.content_type)
+
         email.send()
         
         return True

@@ -49,11 +49,12 @@ def logout_attempt(request):
 def homepage(request):
     if request.method == "POST":
         try:
-            data = json.loads(request.body)  # Parse JSON payload
-            emailUser = data.get('emailUser')
-            emails = data.get('emails')
-            subject = data.get('subject')
-            content = data.get('textareaData')
+            # data = json.loads(request.POST.get('data', {}))
+            emailUser = request.POST.get('emailUser')
+            emails = request.POST.get('emails')
+            subject = request.POST.get('subject')
+            content = request.POST.get('textareaData')
+            attachments = request.FILES.getlist('file')
 
             if not emails or not content:
                 return JsonResponse({'status': 'error', 'message': 'All fields are required'}, status=400)
@@ -69,9 +70,7 @@ def homepage(request):
                 'content': content
             }
 
-            send_mail_func(subject, template_path, context, emailUser, email_list, text_content)
-            
-            # print(emailUser == "FIRST_USER")
+            send_mail_func(subject, template_path, context, emailUser, email_list, text_content, attachments)
 
             return JsonResponse({'status': 'success', 'message': 'Send mail successfully'}, status=200)
         except json.JSONDecodeError:

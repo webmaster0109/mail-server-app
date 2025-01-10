@@ -10,7 +10,8 @@ async function sendEmailSystem(e) {
     const retreiveEmails = document.querySelector('[name=emails]').value;
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     const emailUser = document.querySelector('#emailUser').value;
-    console.log(emailUser);
+    const attachments = document.querySelector('#file');
+    const fileInput = attachments.files;
 
     // Validate form fields
     if (!emailUser) {
@@ -30,18 +31,24 @@ async function sendEmailSystem(e) {
         return;
     }
 
+    const formData = new FormData();
+    formData.append('emails', retreiveEmails);
+    formData.append('subject', subject);
+    formData.append('textareaData', textareaData);
+    formData.append('emailUser', emailUser);
+
+    if (fileInput.length > 0) {
+        for (let i = 0; i < fileInput.length; i++) {
+            formData.append('file', fileInput[i]);
+        }
+    }
+
     const response = await fetch('/account/dashboard/', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
             'X-CSRFToken': csrfToken,
         },
-        body: JSON.stringify({
-            emails: retreiveEmails,
-            subject: subject,
-            textareaData: textareaData,
-            emailUser: emailUser,
-        })
+        body: formData
     });
 
     const result = await response.json();
