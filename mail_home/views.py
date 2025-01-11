@@ -68,7 +68,7 @@ def homepage(request):
             signature = ""
 
             if isSignature == "isSignatureActive":
-                signature += "<p>Thanks,</p><p>Kamal Dandona</p><p><b>Chairman<b></p><p style='font-style: italic;'>Amara Hall of Fame Awards</p>"
+                signature += "<p>Thanks,</p><p>Kamal Dandona</p><p><b>Chairman</b></p><p style='font-style: italic;'>Amara Hall of Fame Awards</p>"
 
             context = {
                 'content': content,
