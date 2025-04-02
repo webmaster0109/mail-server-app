@@ -140,7 +140,7 @@ EMAIL_USERS = {
     },
     'SECOND_USER' : {
         'email' : 'info@ahofa.com',
-        'password' : 'vpqmupdfwyubnmbw',
+        'password' : 'ldilikyhpvtvybgu',
     }
 }
 
