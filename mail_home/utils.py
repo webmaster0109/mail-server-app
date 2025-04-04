@@ -9,7 +9,7 @@ def send_mail_func(subject, template_path, context, from_user, recipient_list, t
         
         user_config = settings.EMAIL_USERS[from_user]
 
-        connections = get_connection(
+        connection = get_connection(
             host=settings.EMAIL_HOST,
             port=settings.EMAIL_PORT,
             username=user_config['email'],
@@ -30,19 +30,26 @@ def send_mail_func(subject, template_path, context, from_user, recipient_list, t
         # msg.attach_alternative(html_content, "text/html")
         # msg.send()
 
-        email = EmailMessage(
+        email = EmailMultiAlternatives(
             subject=subject,
             body=html_content,
             from_email=user_config['email'],
             to=recipient_list,
-            connection=connections,
+            connection=connection,
         )
 
-        email.content_subtype = "html"
+        email.attach_alternative(html_content, "text/html")
         
         if attachments:
             for attachment in attachments:
-                email.attach(attachment.name, attachment.read(), attachment.content_type)
+                attachment.seek(0)
+                file_content = attachment.read()
+
+                email.attach(
+                    filename=attachment.name, 
+                    content=file_content, 
+                    mimetype=attachment.content_type
+                )
 
         email.send()
         
