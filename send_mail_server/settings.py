@@ -136,7 +136,7 @@ EMAIL_USE_TLS = True
 EMAIL_USERS = {
     'FIRST_USER' : {
         'email' : 'kd@ahofa.com',
-        'password' : 'xwrfssfzjbmihjti',
+        'password' : 'gyafkmuskleztxwi',
     },
     'SECOND_USER' : {
         'email' : 'info@ahofa.com',
