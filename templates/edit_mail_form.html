@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% load static %} <!-- If you use the static tag for CSS/JS, though your base seems to use direct paths -->
+
+{% block title %}Edit Mail{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="align-items-center">
+        <div class="mt-5 mb-3">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+                  <li class="breadcrumb-item"><a href="{% url 'mail_list' %}">History</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">{{ page_title|default:"Edit Mail" }}</li>
+                </ol>
+            </nav>
+            <h1 class="text-center">{{ page_title|default:"Edit & Resend Mail" }}</h1>
+        </div>
+
+        <!-- Form for editing and resending the email -->
+        <!-- The JavaScript handling this form needs to know it's for an edit -->
+        <form id="edit-email-form" action="{{ form_action_url }}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- Hidden input to help JS identify the mail ID if needed, though action URL has it -->
+            <input type="hidden" name="mail_id" value="{{ mail_id }}">
+
+            <div class="my-3">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="emailUser" class="form-label">From Email Account:</label>
+                  <select name="emailUser" id="emailUser" class="form-select">
+                    <option value="">Select Email User</option>
+                    <option value="SECOND_USER" {% if initial_data.emailUser == "SECOND_USER" %}selected{% endif %}>info@ahofa.com</option>
+                    <option value="FIRST_USER" {% if initial_data.emailUser == "FIRST_USER" %}selected{% endif %}>kd@ahofa.com</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="emails" class="form-label">To (Comma-separated Emails):</label>
+                  <input type="text" class="form-control" name="emails" id="emails" placeholder="Enter email ids" value="{{ initial_data.emails|default:'' }}">
+                </div>
+              </div>
+            </div>
+
+            <div class="my-3">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="subject" class="form-label">Subject:</label>
+                    <input type="text" name="subject" id="subject" class="form-control" placeholder="Subject" value="{{ initial_data.subject|default:'' }}">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="file" class="form-label">New Attachments (Optional, will replace old ones for this send):</label>
+                    <input type="file" name="file" id="file" class="form-control" multiple>
+                    {% if original_attachments %}
+                        <div class="mt-2">
+                            <small class="form-text text-muted">Previously attached:</small>
+                            <ul class="list-unstyled">
+                                {% for att in original_attachments %}
+                                <li><small><i class="bi bi-paperclip"></i> {{ att.attachments.name|cut:"file/attachments/" }}</small></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                  </div>
+                </div>
+            </div>
+
+            <div class="my-3 form-check">
+              <input class="form-check-input" type="checkbox" name="isSignature" value="isSignatureActive" id="flexCheckDefault" {% if initial_data.is_signature_active %}checked{% endif %}>
+              <label class="form-check-label ms-2" for="flexCheckDefault">
+                Include signature in this email?
+              </label>
+            </div>
+
+            <div class="my-3">
+                <label for="amaraEditor" class="form-label">Email Content:</label>
+                <textarea id="amaraEditor" name="textareaData">{{ initial_data.content|default:'' }}</textarea>
+            </div>
+
+            <div class="my-3 text-center">
+                <button type="submit" class="btn btn-primary col-md-6 col-12"><i class="bi bi-send-check"></i> Resend Edited Mail</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- JavaScript for form submission (similar to send-mails.js but posts to the correct URL) -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const editEmailForm = document.querySelector('#edit-email-form');
+    if (editEmailForm) {
+        editEmailForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const textareaData = tinymce.get('amaraEditor').getContent();
+            const subject = editEmailForm.querySelector('[name=subject]').value;
+            const emails = editEmailForm.querySelector('[name=emails]').value;
+            const csrfToken = editEmailForm.querySelector('[name=csrfmiddlewaretoken]').value;
+            const emailUser = editEmailForm.querySelector('#emailUser').value;
+            const fileInput = editEmailForm.querySelector('#file').files;
+            const isSignatureCheckbox = editEmailForm.querySelector('#flexCheckDefault');
+            const isSignatureValue = isSignatureCheckbox.checked ? 'isSignatureActive' : ''; // Get value based on check state
+
+            // Client-side validation (can be more robust)
+            if (!emailUser) {
+                createToast('Please select a valid email user.', 'Warning');
+                return;
+            }
+            if (!emails) {
+                createToast('Please provide at least one email ID.', 'Warning');
+                return;
+            }
+            if (!subject) {
+                createToast('Please provide a subject.', 'Warning');
+                return;
+            }
+            if (!textareaData) {
+                createToast('Please provide email content.', 'Warning'); // Using createToast instead of alert
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('emailUser', emailUser);
+            formData.append('emails', emails);
+            formData.append('subject', subject);
+            formData.append('isSignature', isSignatureValue); // Send correct value
+            formData.append('textareaData', textareaData);
+            
+            if (fileInput.length > 0) {
+                for (let i = 0; i < fileInput.length; i++) {
+                    formData.append('file', fileInput[i]);
+                }
+            }
+
+            const formActionUrl = editEmailForm.getAttribute('action');
+
+            try {
+                const response = await fetch(formActionUrl, { // Use the form's action URL
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        // 'Content-Type': 'multipart/form-data' is set automatically by browser for FormData
+                    },
+                    body: formData
+                });
+            
+                const result = await response.json();
+            
+                if (response.ok && result.status === 'success') {
+                    createToast(result.message, 'Success');
+                    // Optionally redirect to mail list after a delay
+                    setTimeout(() => {
+                        window.location.href = "{% url 'mail_list' %}"; 
+                    }, 2000);
+                } else {
+                    createToast(result.message || 'An error occurred.', 'Error');
+                }
+            } catch (error) {
+                console.error('Error submitting edit form:', error);
+                createToast('Something went wrong while resending. Try again.', 'Error');
+            }
+        });
+    }
+
+    // This is for the signature checkbox value handling if needed, 
+    // but the submit handler above now directly checks .checked state.
+    // const signatureCheckbox = document.getElementById('flexCheckDefault');
+    // if (signatureCheckbox) {
+    //     signatureCheckbox.addEventListener('change', () => {
+    //         // The value is now 'isSignatureActive' or it's not sent if unchecked.
+    //         // The form submission JS handles this correctly by checking .checked.
+    //     });
+    // }
+});
+</script>
+{% endblock %}
