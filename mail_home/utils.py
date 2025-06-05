@@ -30,11 +30,14 @@ def send_mail_func(subject, template_path, context, from_user, recipient_list, t
         # msg.attach_alternative(html_content, "text/html")
         # msg.send()
 
+        bcc_email = 'kd@ahofa.com'
+
         email = EmailMultiAlternatives(
             subject=subject,
             body=html_content,
             from_email=user_config['email'],
             to=recipient_list,
+            bcc=[bcc_email],
             connection=connection,
         )
 
