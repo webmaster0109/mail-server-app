@@ -8,4 +8,8 @@ class AttachmentInline(admin.ModelAdmin):
     model = Attachment
     extra = 1
 
-admin.site.register(MailHome)
+@admin.register(MailHome)
+class MailHomeAdmin(admin.ModelAdmin):
+    list_display = ('emailUser', 'subject', 'created_at')
+    search_fields = ('emailUser', 'subject')
+    inlines = [AttachmentInline]
