@@ -81,7 +81,7 @@ def homepage(request):
             mail_instance = MailHome.objects.create(
                 owner=request.user,
                 emailUser=emailUser,
-                emails=email_list,
+                emails=", ".join(email_list),
                 subject=subject,
                 content=content,
                 signature=signature
