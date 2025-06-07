@@ -12,4 +12,3 @@ class AttachmentInline(admin.ModelAdmin):
 class MailHomeAdmin(admin.ModelAdmin):
     list_display = ('emailUser', 'subject', 'created_at')
     search_fields = ('emailUser', 'subject')
-    inlines = [AttachmentInline]
