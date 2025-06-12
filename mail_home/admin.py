@@ -10,5 +10,5 @@ class AttachmentInline(admin.ModelAdmin):
 
 @admin.register(MailHome)
 class MailHomeAdmin(admin.ModelAdmin):
-    list_display = ('emailUser', 'subject', 'created_at')
+    list_display = ('subject', 'emailUser', 'is_deleted', 'created_at')
     search_fields = ('emailUser', 'subject')

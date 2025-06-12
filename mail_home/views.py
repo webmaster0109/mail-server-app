@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404   
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 import json
 
 from django.urls import reverse
@@ -46,7 +46,6 @@ def logout_attempt(request):
         return JsonResponse({'status': 'error', 'message': 'Invalid method requested'}, status=401)
     logout(request)
     return JsonResponse({'status': 'success', 'message': 'logging out...'}, status=200)
-    
 
 @login_required(login_url='/account/login/')
 def homepage(request):
@@ -222,3 +221,40 @@ def mail_edit_and_resend(request, pk):
         'original_attachments': original_mail.attachments.all() 
     }
     return render(request, 'edit_mail_form.html', context)
+
+
+@login_required(login_url='/account/login/')
+def trash_view(request):
+    trashed_mails = MailHome.all_objects.filter(owner=request.user, is_deleted=True).order_by('-deleted_at')
+
+    context = {
+        'trashed_mails': trashed_mails,
+        'page_title': "Trash"
+    }
+
+    return render(request, template_name='trash_list.html', context=context)
+
+@login_required(login_url='/account/login/')
+def restore_mail(request, pk):
+    if request.method != "POST":
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
+    
+    mail_to_restore = get_object_or_404(MailHome.all_objects, owner=request.user, pk=pk)
+
+    if mail_to_restore.is_deleted:
+        mail_to_restore.undelete()
+        return JsonResponse({'status': 'success', 'message': 'Mail restored successfully.'}, status=200)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Mail is not in the trash.'}, status=400)
+    
+@login_required(login_url='/account/login/')
+def permanent_delete_mail(request, pk):
+    if request.method != "POST":
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
+    
+    mail_to_delete = get_object_or_404(MailHome.all_objects, owner=request.user, pk=pk)
+    subject = mail_to_delete.subject
+
+    MailHome.all_objects.filter(pk=mail_to_delete.pk).delete()
+
+    return JsonResponse({'status': 'success', 'message': f'Mail "{subject}" deleted permanently.'}, status=200)
