@@ -18,11 +18,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const result = await response.json();
             if (response.ok) {
-                document.getElementById(`trash-row-${mailId}`).remove();
                 createToast(result.message, 'Success');
-                setTimeout(() => {
-                  window.location.reload();
-                }, 1000);
+
+                document.getElementById(`trash-row-${mailId}`).remove();
+                document.getElementById(`deletePermanentModal-${mailId}`).remove();
             } else {
               alert('An error occurred: ' + data.message);
             }
