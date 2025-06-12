@@ -22,6 +22,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 document.getElementById(`trash-row-${mailId}`).remove();
                 document.getElementById(`deletePermanentModal-${mailId}`).remove();
+
+                setTimeout(() => {
+                  window.location.reload();
+                })
             } else {
               alert('An error occurred: ' + data.message);
             }
