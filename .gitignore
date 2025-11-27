@@ -1,1 +1,8 @@
 .qodo
+__pycache__/
+*.pyc
+*.pyo
+db.sqlite3
+/venv
+/env
+.env
